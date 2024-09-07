@@ -16,25 +16,25 @@ var genericName string
 
 var renameCmd = &cobra.Command{
     Use:   "rename",
-    Short: "Renommer tous les fichiers dans un répertoire avec un nom générique et suffixe personnalisé",
+    Short: "Rename all files in a directory with a generic name and custom suffix",
     Run: func(cmd *cobra.Command, args []string) {
         if directory == "" || genericName == "" {
-            fmt.Println("Le répertoire et le nom générique sont requis.")
+            fmt.Println("Directory and generic name are required")
             return
         }
 
         files, err := getFilesInDirectory(directory)
         if err != nil {
-            fmt.Println("Erreur lors de la récupération des fichiers :", err)
+            fmt.Println("Error retrieving files :", err)
             return
         }
 
         for i, file := range files {
             newName := fmt.Sprintf("%s_%d", genericName, i+1)
-            fmt.Printf("Fichier: %s -> Nouveau nom proposé: %s\n", filepath.Base(file), newName)
+            fmt.Printf("files: %s -> new name : %s\n", filepath.Base(file), newName)
 
             reader := bufio.NewReader(os.Stdin)
-            fmt.Print("Entrez un suffixe personnalisé ou appuyez sur Entrée pour valider: ")
+            fmt.Print("Enter a custom suffix or press Enter to validate.: ")
             suffix, _ := reader.ReadString('\n')
             suffix = strings.TrimSpace(suffix)
 
@@ -45,9 +45,9 @@ var renameCmd = &cobra.Command{
             newPath := filepath.Join(filepath.Dir(file), newName+filepath.Ext(file))
             err := os.Rename(file, newPath)
             if err != nil {
-                fmt.Println("Erreur lors du renommage du fichier :", err)
+                fmt.Println("Error renaming file :", err)
             } else {
-                fmt.Printf("Fichier renommé en : %s\n", newName+filepath.Ext(file))
+                fmt.Printf("File renamed to : %s\n", newName+filepath.Ext(file))
             }
         }
     },
@@ -57,8 +57,8 @@ func init() {
     rootCmd.AddCommand(renameCmd)
 
 
-    renameCmd.Flags().StringVarP(&directory, "directory", "d", "", "Répertoire contenant les fichiers")
-    renameCmd.Flags().StringVarP(&genericName, "name", "n", "", "Nom générique pour les fichiers")
+    renameCmd.Flags().StringVarP(&directory, "directory", "d", "", "Directory containing the files")
+    renameCmd.Flags().StringVarP(&genericName, "name", "n", "", "Generic name for files")
 }
 
 
