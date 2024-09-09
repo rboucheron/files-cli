@@ -1,4 +1,4 @@
-module rfiles
+module drip
 
 go 1.22.6
 
