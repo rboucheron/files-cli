@@ -99,7 +99,7 @@ func genericrename(directory, genericName string) {
 	}
 
 	for _, file := range files {
-		// Crée le nouveau nom de fichier uniquement avec le nom générique
+	
 		baseName := strings.TrimSuffix(genericName, filepath.Ext(file))
 		newName := fmt.Sprintf("%s", baseName) 
 		fmt.Printf("files: %s -> new name: %s\n", filepath.Base(file), newName)
@@ -109,7 +109,7 @@ func genericrename(directory, genericName string) {
 		suffix, _ := reader.ReadString('\n')
 		suffix = strings.TrimSpace(suffix)
 	
-		// Ajoute le suffixe personnalisé s'il est fourni
+	
 		if suffix != "" {
 			newName += "_" + suffix
 		}
