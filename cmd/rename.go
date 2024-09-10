@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"drip/cli/flags"
+	"drip/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -45,7 +47,7 @@ var renameCmd = &cobra.Command{
 func init() {
 
 	rootCmd.AddCommand(renameCmd)
-	addDirectoryFlag(renameCmd, &directory)
+	flags.AddDirectoryFlag(renameCmd, &directory)
 
 
 	renameCmd.Flags().StringVarP(&genericName, "generic", "g", "", "Generic name for renaming files")
@@ -53,26 +55,10 @@ func init() {
 
 }
 
-func getFilesInDirectory(directory string) ([]string, error) {
-	var files []string
-	err := filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() {
-			files = append(files, path)
-		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return files, nil
-}
 
 
 func rmspace(directory string) {
-	files, err := getFilesInDirectory(directory)
+	files, err := utils.GetFilesInDirectory(directory)
 	if err != nil {
 		fmt.Println("Error retrieving files:", err)
 		return
@@ -92,7 +78,7 @@ func rmspace(directory string) {
 
 
 func genericrename(directory, genericName string) {
-	files, err := getFilesInDirectory(directory)
+	files, err := utils.GetFilesInDirectory(directory)
 	if err != nil {
 		fmt.Println("Error retrieving files:", err)
 		return
