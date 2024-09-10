@@ -45,11 +45,12 @@ var renameCmd = &cobra.Command{
 func init() {
 
 	rootCmd.AddCommand(renameCmd)
+	addDirectoryFlag(renameCmd, &directory)
 
 
-	renameCmd.Flags().StringVarP(&directory, "directory", "d", "", "Directory to rename files")
 	renameCmd.Flags().StringVarP(&genericName, "generic", "g", "", "Generic name for renaming files")
 	renameCmd.Flags().BoolVarP(&space, "space", "s", false, "Remove spaces from filenames")
+
 }
 
 func getFilesInDirectory(directory string) ([]string, error) {
@@ -97,19 +98,22 @@ func genericrename(directory, genericName string) {
 		return
 	}
 
-	for i, file := range files {
-		newName := fmt.Sprintf("%s_%d", genericName, i+1)
+	for _, file := range files {
+		// Crée le nouveau nom de fichier uniquement avec le nom générique
+		baseName := strings.TrimSuffix(genericName, filepath.Ext(file))
+		newName := fmt.Sprintf("%s", baseName) 
 		fmt.Printf("files: %s -> new name: %s\n", filepath.Base(file), newName)
-
+	
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print("Enter a custom suffix or press Enter to validate: ")
 		suffix, _ := reader.ReadString('\n')
 		suffix = strings.TrimSpace(suffix)
-
+	
+		// Ajoute le suffixe personnalisé s'il est fourni
 		if suffix != "" {
 			newName += "_" + suffix
 		}
-
+	
 		newPath := filepath.Join(filepath.Dir(file), newName+filepath.Ext(file))
 		err := os.Rename(file, newPath)
 		if err != nil {
@@ -118,4 +122,7 @@ func genericrename(directory, genericName string) {
 			fmt.Printf("File renamed to: %s\n", newName+filepath.Ext(file))
 		}
 	}
+	
 }
+
+
